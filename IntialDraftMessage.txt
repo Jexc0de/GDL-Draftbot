@@ -1,0 +1,15 @@
+You're up for the Gator Draft League: Season 3.5 draft! Let me know which Pokémon you want; you can check your division's spreadsheet pinned in the announcements channel (costs are listed on the Draft Pool tab on the spreadsheet).
+
+You must draft a minimum of 9 Pokémon and a maximum of 12 Pokémon. For other restrictions, please consult the spreadsheet; if you have any further questions, DM Zack (league runner) for clarifications.
+
+**You have a total of {POINTS_REMAINING} points remaining.**
+**This is Round 1 of 12.**
+
+You may interact with the bot in one of the following ways:
+
+!draft (Pokemon) - submit your pick for the round. Note that there is NO VERIFICATION, so **using this command will finalize your pick**
+!forfeit - forfeit the remainder of your picks. You may only do this if you have at least 9 Pokémon.
+!lookup (Pokémon) - find the name of a Pokémon closest to the input. This is useful if you don't know how to spell a Pokémon's name, or if you're trying to find the exact format used for specific Pokémon forms, such as Rotom.
+!help - For a full list of commands.
+
+If you have any other questions regarding how the bot works, please contact Justin (jex) with questions. If you have any questions about the league, please contact Zack with questions. Thank you!

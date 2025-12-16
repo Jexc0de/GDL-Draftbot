@@ -1,0 +1,18 @@
+You’re up for the Gator Draft League: Season 3.5!
+
+Points remaining: {POINTS_REMAINING}
+Round: {ROUND_NUMBER} of 12
+
+Draft a Pokémon using the following commands:
+
+!draft <Pokemon> – submit your pick (finalizes pick)
+
+!Docs – For links the the spreadsheets
+
+!lookup <Pokemon> – find correct spelling, point value, or if drafted
+
+!help – full list of commands
+
+Remember: minimum 9 and maximum 12 Pokémon; Tera-Captains cannot be drafted. For other rules, check your division’s pinned spreadsheet.
+
+Questions about the bot? DM Justin(jex). Questions about the league? DM Zack(league runner).
