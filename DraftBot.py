@@ -52,9 +52,11 @@ class MyClient(discord.Client):
                     break
 
         self.divisions ={
-            "IronBundle":Division("ironbundle",self),
+            "IronBundle":Division("iron-bundle",self),
             "Delibird": Division("delibird",self)
         }
+
+
 
         for divison_name, divison in self.divisions.items():
             if divison_name == "IronBundle":
@@ -65,6 +67,7 @@ class MyClient(discord.Client):
                 current = await Player.create(self,playerId)
                 divison.players.append(current)
                 print(f"Added: {current.discordPlayerData.name} to {divison_name} division")
+            await divison.find_channel(client)
 
 
     async def on_message(self,message):

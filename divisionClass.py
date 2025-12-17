@@ -10,7 +10,7 @@ class Division:
     
     def __init__(self,name,bot):
         self.name = name
-        self.draftChannel = self.find_channel(bot)
+        self.draftChannel = None
         
         self.players = []
         self.activeTurn = Player
@@ -49,7 +49,7 @@ class Division:
             for channel in guild.text_channels:
                 if target in channel.name:
                     print(f"{self.name} found its channel:{bot.get_channel(channel.id)}")
-                    return bot.get_channel(channel.id)
+                    return channel
         raise RuntimeError(f"No drafting channel found for division '{self.name}'")
 
 
