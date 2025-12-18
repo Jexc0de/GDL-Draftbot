@@ -10,11 +10,7 @@ class Division:
     
     def __init__(self,name,bot):
         self.name = name
-<<<<<<< HEAD
         self.draftChannel = None
-=======
-        self.draftChannel = ""
->>>>>>> 3b5a8d8 (Updated team command to now allow passage of a username to see what other players have drafted. Also fixed a few bugs)
         
         self.players = []
         self.activeTurn = Player
@@ -173,9 +169,6 @@ class Division:
             return
         
     async def handle_draft(self,message,pokemonRequested,bot):
-        if self.draftChannel == "":
-            self.draftChannel = await self.find_channel(bot)
-
         PokemonData = bot.get_pokemon_info(pokemonRequested)
         if PokemonData == None:
             await message.channel.send(self.cantDraftMessage)
