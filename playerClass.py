@@ -12,7 +12,9 @@ class Player:
         self.discordPlayerData = discordPlayerData
         self.points = SeasonPoints
         #draftedPokemon by dex number and string
-        self.draftedPokemon = {int:str}
+        self.draftedPokemon = {}
+        #all nicknames of the player wherever the bot and player share a guild
+        self.nicknames = {}
         self.missedTurns = 0
         self.maxSingleTurnSpend = SeasonPoints
         self.draftMin = 9
