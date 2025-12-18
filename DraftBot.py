@@ -7,8 +7,8 @@ from divisionClass import Division
 class MyClient(discord.Client):
 
     #hardcoded division prelist, filled with discord IDs of players in order
-    IronBundlePrelist = [603351664241672202, 435154768546234368]
-
+    IronBundlePrelist = [603351664241672202, 435154768546234368,]
+    
     DelibirdPreList = [603351664241672202, 435154768546234368]
 
     #harcoded admin IDs
@@ -65,10 +65,25 @@ class MyClient(discord.Client):
                 prelist = self.DelibirdPreList
             for playerId in prelist:
                 current = await Player.create(self,playerId)
+                for guild in current.discordPlayerData.mutual_guilds:
+                    playerMember = await guild.fetch_member(playerId)
+                    if playerMember.nick:
+                        current.nicknames[guild.id] = playerMember.nick
+                print(current.nicknames)
                 divison.players.append(current)
                 print(f"Added: {current.discordPlayerData.name} to {divison_name} division")
             await divison.find_channel(client)
 
+
+    async def on_member_update(self,before,after):
+        if before.nick == after.nick:
+            return
+        
+        for division_name,division in self.divisions.items():
+            for player in division.players:
+                if player.discordPlayerData.id == before.id:
+                    player.nicknames[after.guild.id] = after.nick
+                    break
 
     async def on_message(self,message):
         if message.author == client.user:
@@ -170,7 +185,9 @@ class MyClient(discord.Client):
 
             for division_name,division in self.divisions.items():
                 for player in division.players:
-                    if player.discordPlayerData.name == nameSearch or player.discordPlayerData.display_name == nameSearch:
+                    #Created for readability as to not have one giant if statement. May revisit in the future for refactoring but for now it works
+
+                    if nameSearch in player.nicknames.values() or player.discordPlayerData.name == nameSearch or player.discordPlayerData.display_name == nameSearch:
                         found = True
                         if player.draftedPokemon:
                             messageToSend = f"{player.discordPlayerData.name}'s drafted Pokémon in {division_name}:\n"
