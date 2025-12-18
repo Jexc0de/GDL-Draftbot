@@ -10,7 +10,11 @@ class Division:
     
     def __init__(self,name,bot):
         self.name = name
+<<<<<<< HEAD
         self.draftChannel = None
+=======
+        self.draftChannel = ""
+>>>>>>> 3b5a8d8 (Updated team command to now allow passage of a username to see what other players have drafted. Also fixed a few bugs)
         
         self.players = []
         self.activeTurn = Player
@@ -118,9 +122,9 @@ class Division:
                 forward = True
 
         if forward != oldForward:
-            self.round_counter += 1
+            self.roundCounter += 1
 
-        if self.round_counter >=self.draftMax:
+        if self.roundCounter >=self.draftMax:
            asyncio.create_task(self.draft_over())
 
         return currentIndex, forward
@@ -169,6 +173,9 @@ class Division:
             return
         
     async def handle_draft(self,message,pokemonRequested,bot):
+        if self.draftChannel == "":
+            self.draftChannel = await self.find_channel(bot)
+
         PokemonData = bot.get_pokemon_info(pokemonRequested)
         if PokemonData == None:
             await message.channel.send(self.cantDraftMessage)
@@ -179,7 +186,7 @@ class Division:
         PokedexNumber = PokemonData['dex']
         PokemonCost = PokemonData['points']
         PokemonName = PokemonData['name'].lower()
-        draft_status = self.activeTurn.attempt_draft(PokedexNumber,PokemonCost,PokemonName)
+        draft_status = self.activeTurn.attempt_draft(PokedexNumber,PokemonName,PokemonCost)
 
         AnnounceDraftedMessage = self.draftedMessage.format(
                     author_mention = message.author.mention,
@@ -191,7 +198,6 @@ class Division:
             #success
             case 0:
                 self.draftedPokemon.append(PokemonName)
-
                 await self.draftChannel.send(AnnounceDraftedMessage)
                 followUpMessage = self.pointsRemainingMessage.format(points = self.activeTurn.points)
                 await message.channel.send(followUpMessage)

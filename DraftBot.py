@@ -7,12 +7,12 @@ from divisionClass import Division
 class MyClient(discord.Client):
 
     #hardcoded division prelist, filled with discord IDs of players in order
-    IronBundlePrelist = [603351664241672202]
+    IronBundlePrelist = [603351664241672202, 435154768546234368]
 
-    DelibirdPreList = [603351664241672202]
+    DelibirdPreList = [603351664241672202, 435154768546234368]
 
     #harcoded admin IDs
-    admins = [603351664241672202,1247730986238873705]
+    admins = [603351664241672202,1247730986238873705,435154768546234368]
     annoucements_channel = None
     draftMin = 9
     draftMax = 12
@@ -156,14 +156,21 @@ class MyClient(discord.Client):
                     messageToSend += f"{division_name}: No active turn\n"
             await message.channel.send(messageToSend)
         
-
-        showPokemon = re.fullmatch(r"!Team", message.content, re.IGNORECASE)
+        showPokemon = re.fullmatch(r"!Team(\s|\Z)(.+|\Z)", message.content, re.IGNORECASE)
         if showPokemon:
             found = False
             messageToSend = ""
+            nameSearch = ""
+
+            splitMessage = re.split(r"\s+", message.content)
+            if len(splitMessage) < 2:
+                nameSearch = message.author.name
+            else:
+                nameSearch = splitMessage[1]
+
             for division_name,division in self.divisions.items():
                 for player in division.players:
-                    if player.discordPlayerData.id == message.author.id:
+                    if player.discordPlayerData.name == nameSearch or player.discordPlayerData.display_name == nameSearch:
                         found = True
                         if player.draftedPokemon:
                             messageToSend = f"{player.discordPlayerData.name}'s drafted Pokémon in {division_name}:\n"
@@ -176,7 +183,7 @@ class MyClient(discord.Client):
                     break
 
             if not found:
-                messageToSend = f"You must be actively drafting to use this feature."
+                messageToSend = f"{nameSearch}'s team could not be found"
             await message.channel.send(messageToSend)
             return
         
@@ -187,7 +194,7 @@ class MyClient(discord.Client):
                                  "!lookup (pokemon) - find the name of a Pokémon closest to the input. This is useful if you don't know how to spell a Pokémon's name,if you're trying to find the exact format, and if you would like to know its draft status or cost.\n"
                                  "!forfeit - forfeit the remainder of your picks. You may only do this if you have at least 9 Pokémon. **This action is also exclusive to DMs and cannot be reversed.**\n"
                                  "!Docs - Provides the links to the google sheet for each division.\n"
-                                 "!team - This will show you the pokémon *you* have currently drafted.\n"
+                                 "!team (user) - This will show you the pokémon the specified user has currently drafted. Leave blank to see what *you* have drafted\n"
                                  "!curr_turn - This will show whos turn it currently is for each division.\n"
                                  "*side note: none of the commands are case sensitive.*"
                                  )

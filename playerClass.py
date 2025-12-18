@@ -12,7 +12,7 @@ class Player:
         self.discordPlayerData = discordPlayerData
         self.points = SeasonPoints
         #draftedPokemon by dex number and string
-        self.draftedPokemon = {int:str}
+        self.draftedPokemon = {}
         self.missedTurns = 0
         self.maxSingleTurnSpend = SeasonPoints
         self.draftMin = 9
