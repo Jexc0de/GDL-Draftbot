@@ -49,7 +49,8 @@ class Division:
             for channel in guild.text_channels:
                 if target in channel.name:
                     print(f"{self.name} found its channel:{bot.get_channel(channel.id)}")
-                    return channel
+                    self.draftChannel = channel
+                    return
         raise RuntimeError(f"No drafting channel found for division '{self.name}'")
 
 
@@ -179,8 +180,10 @@ class Division:
         PokedexNumber = PokemonData['dex']
         PokemonCost = PokemonData['points']
         PokemonName = PokemonData['name'].lower()
-        draft_status = self.activeTurn.attempt_draft(PokedexNumber,PokemonName,PokemonCost)
-
+        if "mega-" not in PokemonName:
+            draft_status = self.activeTurn.attempt_draft(PokedexNumber,PokemonName,PokemonCost)
+        else:
+            draft_status = self.activeTurn.attempt_captain_draft(PokedexNumber,PokemonName,PokemonCost)
         AnnounceDraftedMessage = self.draftedMessage.format(
                     author_mention = message.author.mention,
                     name = self.name,
@@ -194,6 +197,7 @@ class Division:
                 await self.draftChannel.send(AnnounceDraftedMessage)
                 followUpMessage = self.pointsRemainingMessage.format(points = self.activeTurn.points)
                 await message.channel.send(followUpMessage)
+                await message.channel.send(f"You also have {self.activeTurn.captainPoints} captain points remaining.")
                 #can't draft again
                 if self.activeTurn.pokemon_count()>= self.draftMax or self.activeTurn.points == 0:
                     if self.activeTurn.pokemon_count() >= self.draftMax:
@@ -213,7 +217,7 @@ class Division:
                     self.activeTurn = self.players[self.turnTracker]
                 else:
                     self.activeTurn,self.forward = self.get_next_turn(self.turnTracker,self.forward)
-                self.next_turn_procedure()
+                await self.next_turn_procedure()
             #not enough points
             case 1:
                 await message.channel.send(self.notEnoughPointsMessage)
@@ -228,6 +232,11 @@ class Division:
             case 4:
                 await message.channel.send(self.lowPointsWarning.format(max_pick=self.activeTurn.maxSingleTurnSpend))
                 await message.channel.send("Due to this fact your draft request could not be complete. please draft another Pokémon.")
+            case 5:
+                await message.channel.send(self.notEnoughPointsMessage)
+                await message.channel.send(f"You have {self.activeTurn.captainPoints} points for your captain.")
+            case 6:
+                await message.channel.send("You are at your captain limit.")
             case _:
                 await message.channel.send("Unable to complete draft request, please contact Jex(Justin) or Zack(League Runner)")
         return
