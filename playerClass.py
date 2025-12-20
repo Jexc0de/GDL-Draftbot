@@ -1,4 +1,5 @@
-SeasonPoints = 106
+SeasonPoints = 112
+CaptainPoints = 26
 
 class Player:
 
@@ -18,6 +19,9 @@ class Player:
         self.missedTurns = 0
         self.maxSingleTurnSpend = SeasonPoints
         self.draftMin = 9
+        self.captainLimit = 2
+        self.captains = {}
+        self.captainPoints = 26
 
 
     def update_single_turn_spend(self):#Don't ask why its 9 - val - 1 it just works and I don't question it
@@ -38,9 +42,28 @@ class Player:
             return True
         return False
 
-    def draft(self,dexNumber,pokemonName,pokemonCost):
-        self.draftedPokemon[dexNumber] = pokemonName
-        self.points -= pokemonCost
+    def draft(self,dexNumber,pokemonName,pokemonCost,captain=False):
+        if not captain:
+            self.draftedPokemon[dexNumber] = pokemonName
+            self.points -= pokemonCost
+        else:
+            self.draftedPokemon[dexNumber] = pokemonName
+            self.captains[dexNumber] = pokemonName
+            self.captainPoints -= pokemonCost
+
+
+    def attempt_captain_draft(self,dexNum,pokemonName,pokemonCost):
+        self.update_single_turn_spend()
+        if pokemonCost > self.captainPoints:
+            return 5
+        if dexNum in self.draftedPokemon:
+            return 2
+        if len(self.captains) == self.captainLimit:
+            return 6
+        self.draft(dexNum,pokemonName,pokemonCost,captain=True)
+        if self.missed_turns_remaining():
+            return 4
+        return 0
 
     def attempt_draft(self,dexNum,pokemonName,pokemonCost):
         self.update_single_turn_spend()
@@ -60,3 +83,5 @@ class Player:
     #2)dex clause
     #3)Greater then max single turn spend
     #4)missed a turn and will draft again
+    #5)captain unaffordable
+    #6)drafted captain limit

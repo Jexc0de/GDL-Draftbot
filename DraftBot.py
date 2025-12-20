@@ -9,7 +9,7 @@ class MyClient(discord.Client):
     #hardcoded division prelist, filled with discord IDs of players in order
     IronBundlePrelist = [603351664241672202, 435154768546234368,]
     
-    DelibirdPreList = [603351664241672202, 435154768546234368]
+    DelibirdPreList = [603351664241672202]#,435154768546234368]
 
     #harcoded admin IDs
     admins = [603351664241672202,1247730986238873705,435154768546234368]
@@ -22,7 +22,7 @@ class MyClient(discord.Client):
     def __init__(self, **options):
         super().__init__(**options) 
         self.pokemon_dict = {}
-        with open("pokemonlist_cleaned.txt", newline="", encoding="utf-8") as f:
+        with open("pokemonlist_mega_swapped.txt", newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
             for name, dex_num, points in reader:
                 self.pokemon_dict[name.lower()] = {
@@ -52,8 +52,9 @@ class MyClient(discord.Client):
                     break
 
         self.divisions ={
-            "IronBundle":Division("iron-bundle",self),
-            "Delibird": Division("delibird",self)
+            #"iron-Bundle":Division("iron-bundle",self),
+            #"delibird": Division("delibird",self)
+            "porygon":Division("porygon",self)
         }
 
 
@@ -73,7 +74,6 @@ class MyClient(discord.Client):
                 divison.players.append(current)
                 print(f"Added: {current.discordPlayerData.name} to {divison_name} division")
             await divison.find_channel(client)
-
 
     async def on_member_update(self,before,after):
         if before.nick == after.nick:
@@ -156,7 +156,8 @@ class MyClient(discord.Client):
 
         spreadSheet = re.fullmatch(r"!Docs", message.content, re.IGNORECASE)
         if spreadSheet:
-            await message.channel.send("**placeholder**")
+            await message.channel.send("Iron Bundle Division:https://docs.google.com/spreadsheets/d/1GQcDmouK4coDi7XcQVpDyEp0tZhlZXp_a9F9YQ-OlLg/edit?usp=sharing\n"+
+                                       "Delibird Division:https://docs.google.com/spreadsheets/d/1fs0B7jlXaQBTDM2FZV9TVPaRX_bRkWu74PRkG46GyRA/edit?usp=sharing")
             return
 
         currentTurn = re.fullmatch(r"!Curr_turn", message.content, re.IGNORECASE)
