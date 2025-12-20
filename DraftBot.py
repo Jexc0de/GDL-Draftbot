@@ -22,7 +22,7 @@ class MyClient(discord.Client):
     def __init__(self, **options):
         super().__init__(**options) 
         self.pokemon_dict = {}
-        with open("pokemonlist_clean.txt", newline="", encoding="utf-8") as f:
+        with open("pokemonlist_cleaned.txt", newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
             for name, dex_num, points in reader:
                 self.pokemon_dict[name.lower()] = {
