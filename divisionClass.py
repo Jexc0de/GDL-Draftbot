@@ -22,6 +22,10 @@ class Division:
         self.draftMax = draftMax
         self.timerTask = None
         self.roundCounter = 1
+        self.savedMessageId = None
+        self.savedChannelId = None
+        self.savedDraftRequest = None
+        self.confirmMessageId = None
 
         self.cantDraftMessage = "This Pokémon can’t be drafted. Try using !Lookup [pokemon] to check the spelling."
         self.positiveCantDraftMessage = "This Pokémon has already been drafted. Try another one!"
@@ -151,17 +155,45 @@ class Division:
         self.remaining_time = self.turnTimer
         await self.notify_current_player()
 
+
+    def clearRequestcache(self):
+        self.savedChannelId = None
+        self.savedDraftRequest = None
+        self.savedMessageId = None
+        self.confirmMessageId = None
+
+
+    async def handle_react(self,react,bot):
+        if react.message_id != self.confirmMessageId:
+            return
+        channel = await bot.fetch_channel(self.savedChannelId)
+        message = await channel.fetch_message(self.savedMessageId)
+        
+        if str(react.emoji) == "🚫":
+            self.clearRequestcache()
+            await channel.send("Choice cancelled. Please select new choice.")
+            return
+        if str(react.emoji) == "✅":
+            await self.handle_draft(message,self.savedDraftRequest,bot)
+            self.clearRequestcache()
+    
+
     async def handle_message(self,message,bot):
 
         if not isinstance(message.channel,discord.DMChannel):
             return
         if getattr(self.activeTurn,"discordId",None) != message.author.id:
             return
-        
+        #hijacked orginal draft request handling to have message confirmation added. Will revisit post season...
         draft = re.fullmatch(r"!draft\s+(.+)", message.content, re.IGNORECASE)
         if(draft):
-            cleanedDraft = draft.group(1).strip()
-            await self.handle_draft(message,cleanedDraft,bot)
+            self.savedDraftRequest = draft.group(1).strip()
+            self.savedChannelId = message.channel.id
+            self.savedMessageId = message.id
+            sentMessage = await message.channel.send("React to confirm your draft choice.")
+            await sentMessage.add_reaction("✅")
+            await sentMessage.add_reaction("🚫")
+            self.confirmMessageId = sentMessage.id
             return
         
         forfeit = re.fullmatch(r"!forfeit", message.content, re.IGNORECASE)

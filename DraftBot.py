@@ -85,6 +85,12 @@ class MyClient(discord.Client):
                     player.nicknames[after.guild.id] = after.nick
                     break
 
+    async def on_raw_reaction_add(self,react):
+        if react.user_id == client.user.id:
+            return
+        for division in self.divisions.values():
+            await division.handle_react(react,self)
+
     async def on_message(self,message):
         if message.author == client.user:
             return
@@ -223,6 +229,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
 intents.members = True
+intents.reactions = True
 
 
 

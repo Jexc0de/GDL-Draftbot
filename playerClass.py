@@ -22,6 +22,7 @@ class Player:
         self.captainLimit = 2
         self.captains = {}
         self.captainPoints = 26
+        self.waitingOnConfirmation = False
 
 
     def update_single_turn_spend(self):#Don't ask why its 9 - val - 1 it just works and I don't question it
