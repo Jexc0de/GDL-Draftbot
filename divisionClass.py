@@ -190,7 +190,7 @@ class Division:
             self.savedDraftRequest = draft.group(1).strip()
             self.savedChannelId = message.channel.id
             self.savedMessageId = message.id
-            sentMessage = await message.channel.send("React to confirm your draft choice.")
+            sentMessage = await message.channel.send(f"React to confirm drafting {self.savedDraftRequest}.")
             await sentMessage.add_reaction("✅")
             await sentMessage.add_reaction("🚫")
             self.confirmMessageId = sentMessage.id
