@@ -188,10 +188,14 @@ class Division:
         #hijacked orginal draft request handling to have message confirmation added. Will revisit post season...
         draft = re.fullmatch(r"!draft\s+(.+)", message.content, re.IGNORECASE)
         if(draft):
-            self.savedDraftRequest = draft.group(1).strip()
+            self.savedDraftRequest = draft.group(1).strip().lower()
             self.savedChannelId = message.channel.id
             self.savedMessageId = message.id
-            sentMessage = await message.channel.send(f"React to confirm drafting {self.savedDraftRequest}.")
+            warningMessage = ""
+            if self.savedDraftRequest in self.complexBans:
+                warningMessage = (f"**Warning** {self.savedDraftRequest.capitalize()} has the following complex bans: "
+                                  f"{self.complexBans[self.savedDraftRequest]}")
+            sentMessage = await message.channel.send(f"React to confirm drafting {self.savedDraftRequest.capitalize()}.\n{warningMessage}")
             await sentMessage.add_reaction("✅")
             await sentMessage.add_reaction("🚫")
             self.confirmMessageId = sentMessage.id

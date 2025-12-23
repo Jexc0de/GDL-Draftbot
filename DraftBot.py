@@ -7,9 +7,9 @@ from divisionClass import Division
 class MyClient(discord.Client):
 
     #hardcoded division prelist, filled with discord IDs of players in order
-    IronBundlePrelist = [603351664241672202] #,435154768546234368
+    IronBundlePrelist = [603351664241672202]#,435154768546234368
     
-    DelibirdPreList = [603351664241672202] #,435154768546234368
+    DelibirdPreList = [603351664241672202]#,435154768546234368]
 
     #harcoded admin IDs
     admins = [603351664241672202,1247730986238873705,435154768546234368]
@@ -148,7 +148,7 @@ class MyClient(discord.Client):
 
         skipCmd = re.fullmatch(r"!skip\s+(.+)", message.content, re.IGNORECASE)
         if skipCmd and message.author.id in self.admins:
-            division_request = skipCmd.group(1).capitalize() #Why capitalize only to check the lowercase version
+            division_request = skipCmd.group(1)
             for division_name,division in self.divisions.items():
                 if division_request.lower() == division_name.lower() and division.activeTurn:
                     skipped_player = division.activeTurn
@@ -229,14 +229,20 @@ class MyClient(discord.Client):
         helpMessage = re.fullmatch(r"!help", message.content, re.IGNORECASE)
         if helpMessage:
             await message.channel.send("The commands for the bot are as follows:\n"
-                                 "!draft (pokemon) - Use this on your turn to draft a pokemon. **There is no confirmation prompt. This command is also exclusive to DMs**\n"
-                                 "!lookup (pokemon) - find the name of a Pokémon closest to the input. This is useful if you don't know how to spell a Pokémon's name,if you're trying to find the exact format, and if you would like to know its draft status or cost.\n"
+                                 "!draft (pokemon) - Use this on your turn to draft a pokemon. **This command is also exclusive to DMs**\n"
+                                 "!lookup (pokemon) - find the name of a Pokémon closest to the input. This is useful if you don't know how to spell a Pokémon's name,if you're trying to find the exact format, and if you would like to know its draft status, cost, or any bans it has.\n"
                                  "!forfeit - forfeit the remainder of your picks. You may only do this if you have at least 9 Pokémon. **This action is also exclusive to DMs and cannot be reversed.**\n"
                                  "!Docs - Provides the links to the google sheet for each division.\n"
                                  "!team (user) - This will show you the pokémon the specified user has currently drafted. Leave blank to see what *you* have drafted\n"
                                  "!curr_turn - This will show whos turn it currently is for each division.\n"
                                  "*side note: none of the commands are case sensitive.*"
                                  )
+            if message.author.id in self.admins:
+                await message.channel.send("The admin commands for this bot are as follows:\n"
+                                    "!startdraft - Use this to start the drafting process\n"
+                                    "!skip (division) - Skips the current drafting person and moves on to the next player in the drafting order\n"
+                                    "!addcban (pokemon) (rule) - Adds a complex ban for the specified pokemon in all divisions. This ban will be viewable with the !lookup command"
+                                    )
 
 
 
