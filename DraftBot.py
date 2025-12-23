@@ -7,9 +7,9 @@ from divisionClass import Division
 class MyClient(discord.Client):
 
     #hardcoded division prelist, filled with discord IDs of players in order
-    IronBundlePrelist = [603351664241672202, 435154768546234368,]
+    IronBundlePrelist = [603351664241672202] #,435154768546234368
     
-    DelibirdPreList = [603351664241672202]#,435154768546234368]
+    DelibirdPreList = [603351664241672202] #,435154768546234368
 
     #harcoded admin IDs
     admins = [603351664241672202,1247730986238873705,435154768546234368]
@@ -52,15 +52,15 @@ class MyClient(discord.Client):
                     break
 
         self.divisions ={
-            #"iron-Bundle":Division("iron-bundle",self),
-            #"delibird": Division("delibird",self)
-            "porygon":Division("porygon",self)
+            "iron-bundle":Division("iron-bundle",self),
+            "delibird": Division("delibird",self)
+            #"porygon":Division("porygon",self)
         }
 
 
 
         for divison_name, divison in self.divisions.items():
-            if divison_name == "IronBundle":
+            if divison_name == "iron-bundle":
                 prelist = self.IronBundlePrelist
             else:
                 prelist = self.DelibirdPreList
@@ -109,7 +109,10 @@ class MyClient(discord.Client):
                 for division_name,division in self.divisions.items():
                     draftedList = division.draftedPokemon
                     status = "already drafted" if result['name'].lower() in draftedList else "available"
-                    statuses.append(f"{division_name} division: {status}")
+                    statuses.append(f"**{division_name} division**: {status}")
+
+                    if result['name'].lower() in division.complexBans:
+                        statuses.append(f"Complex Ban for {division_name}: {division.complexBans[result['name'].lower()]}")
                 
                 status_str = "\n".join(statuses)
 
@@ -145,7 +148,7 @@ class MyClient(discord.Client):
 
         skipCmd = re.fullmatch(r"!skip\s+(.+)", message.content, re.IGNORECASE)
         if skipCmd and message.author.id in self.admins:
-            division_request = skipCmd.group(1).capitalize()
+            division_request = skipCmd.group(1).capitalize() #Why capitalize only to check the lowercase version
             for division_name,division in self.divisions.items():
                 if division_request.lower() == division_name.lower() and division.activeTurn:
                     skipped_player = division.activeTurn
@@ -158,6 +161,18 @@ class MyClient(discord.Client):
                     await division.notify_current_player()
                     return
             await message.channel.send("It seems I was unable to find that division.")
+            return
+        
+        addRule = re.fullmatch(r"!addcban\s+(\w+)\s+(.+)", message.content, re.IGNORECASE)
+        if addRule and message.author.id in self.admins:
+            pokemon_request = addRule.group(1).lower()
+            rule_request = addRule.group(2).lower().strip()
+            if pokemon_request not in self.pokemon_dict:
+                await message.channel.send(f"{pokemon_request} is not a valid Pokemon")
+                return
+            for division_name,division in self.divisions.items():
+                division.complexBans[pokemon_request] = rule_request
+                await message.channel.send(f"{rule_request} added as a rule for {pokemon_request} in {division_name}")
             return
 
         spreadSheet = re.fullmatch(r"!Docs", message.content, re.IGNORECASE)

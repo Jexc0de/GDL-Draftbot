@@ -18,6 +18,7 @@ class Division:
         self.forward = True
         self.turnTimer = self.remainingTime = turnDuration
         self.draftedPokemon = []
+        self.complexBans = {}
         self.draftMin = draftMin
         self.draftMax = draftMax
         self.timerTask = None
@@ -248,7 +249,7 @@ class Division:
                         self.turnTracker = len(self.players) - 1 if not self.forward else 0
                     self.activeTurn = self.players[self.turnTracker]
                 else:
-                    self.activeTurn,self.forward = self.get_next_turn(self.turnTracker,self.forward)
+                    self.turnTracker,self.forward = self.get_next_turn(self.turnTracker,self.forward)
                 await self.next_turn_procedure()
             #not enough points
             case 1:
@@ -286,6 +287,6 @@ class Division:
             return
 
         
-        self.turn_tracker,self.forward = self.forfeit(self.turn_tracker,self.forward)
+        self.turnTracker,self.forward = self.forfeit(self.turnTracker,self.forward)
         self.next_turn_procedure()
         return
