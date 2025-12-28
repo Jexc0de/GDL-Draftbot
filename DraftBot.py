@@ -46,7 +46,16 @@ class MyClient(discord.Client):
             }
         return None
 
-    async def createDivisions(self):
+    async def on_ready(self):
+        print(f"Logged on as {self.user}!")
+        target_channel = "announcements"
+        for guild in self.guilds:
+            for channel in guild.text_channels:
+                if target_channel in channel.name:
+                    self.announcements_channel = client.get_channel(channel.id)
+                    print(f"announcements found:{channel.name}")
+                    break
+
         self.divisions ={
                 "iron-bundle":Division("iron-bundle",self),
                 "delibird": Division("delibird",self)
@@ -69,26 +78,6 @@ class MyClient(discord.Client):
             
             divison.activeTurn = divison.players[0]
             await divison.find_channel(client)
-
-    async def on_ready(self):
-        print(f"Logged on as {self.user}!")
-        target_channel = "announcements"
-        for guild in self.guilds:
-            for channel in guild.text_channels:
-                if target_channel in channel.name:
-                    self.announcements_channel = client.get_channel(channel.id)
-                    print(f"announcements found:{channel.name}")
-                    break
-        if self.saveManager.checkJson():
-            try:
-                self.divisions = await self.saveManager.load(self)
-                print(f"Loaded {self.divisions.keys()} from JSON")
-            except:
-                print("DATA UNLOADABLE")
-                await self.createDivisions()
-
-        else:
-            await self.createDivisions()
 
     async def on_member_update(self,before,after):
         if before.nick == after.nick:
@@ -116,21 +105,21 @@ class MyClient(discord.Client):
         save = re.fullmatch(r"!Save",message.content,re.IGNORECASE)
         if save and message.author.id in self.admins:
             try:
-                print("Writting to File....")
+                await message.channel.send("Saving to file...")
                 self.saveManager.saveAll(self.divisions)
-                print("Save Completed")
+                await message.channel.send("Save completed!")
             except:
-                print("COULD NOT SAVE")
+                await message.channel.send("COULD NOT SAVE")
             
         load = re.fullmatch(r"!load",message.content,re.IGNORECASE)
         if load and message.author.id in self.admins and self.saveManager.checkJson():
             try:
-                print("Loading from file...")
+                await message.channel.send("Loading from file...")
                 divisionBuffer = await self.saveManager.load(self)
                 self.divisions = divisionBuffer
-                print("Load successful!")
+                await message.channel.send("Load successful!")
             except:
-                print("DATA UNOBTAINABLE")
+                await message.channel.send("DATA UNOBTAINABLE")
         
         lookUp = re.fullmatch(r"!Lookup\s+(.+)",message.content,re.IGNORECASE)
         if lookUp:
