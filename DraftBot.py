@@ -3,13 +3,17 @@ from dotenv import load_dotenv
 from discord.utils import get
 from playerClass import Player
 from divisionClass import Division
+from saveManager import SaveManager
+
+#Need a SaveManager timer
+#When it times out, pause everything else, save the data, and print "Saving...."
 
 class MyClient(discord.Client):
 
     #hardcoded division prelist, filled with discord IDs of players in order
-    IronBundlePrelist = [603351664241672202]#,435154768546234368
+    IronBundlePrelist = [603351664241672202]
     
-    DelibirdPreList = [603351664241672202]#,435154768546234368]
+    DelibirdPreList = [603351664241672202]
 
     #harcoded admin IDs
     admins = [603351664241672202,1247730986238873705,435154768546234368]
@@ -22,6 +26,7 @@ class MyClient(discord.Client):
     def __init__(self, **options):
         super().__init__(**options) 
         self.pokemon_dict = {}
+        self.saveManager = SaveManager("saved_data.json")
         with open("pokemonlist_mega_swapped.txt", newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
             for name, dex_num, points in reader:
@@ -52,12 +57,10 @@ class MyClient(discord.Client):
                     break
 
         self.divisions ={
-            "iron-bundle":Division("iron-bundle",self),
-            "delibird": Division("delibird",self)
-            #"porygon":Division("porygon",self)
-        }
-
-
+                "iron-bundle":Division("iron-bundle",self),
+                "delibird": Division("delibird",self)
+                #"porygon":Division("porygon",self)
+            }
 
         for divison_name, divison in self.divisions.items():
             if divison_name == "iron-bundle":
@@ -70,9 +73,10 @@ class MyClient(discord.Client):
                     playerMember = await guild.fetch_member(playerId)
                     if playerMember.nick:
                         current.nicknames[guild.id] = playerMember.nick
-                print(current.nicknames)
                 divison.players.append(current)
                 print(f"Added: {current.discordPlayerData.name} to {divison_name} division")
+            
+            divison.activeTurn = divison.players[0]
             await divison.find_channel(client)
 
     async def on_member_update(self,before,after):
@@ -98,6 +102,24 @@ class MyClient(discord.Client):
         for division in self.divisions.values():
             await division.handle_message(message,self)
 
+        save = re.fullmatch(r"!Save",message.content,re.IGNORECASE)
+        if save and message.author.id in self.admins:
+            try:
+                await message.channel.send("Saving to file...")
+                self.saveManager.saveAll(self.divisions)
+                await message.channel.send("Save completed!")
+            except:
+                await message.channel.send("COULD NOT SAVE")
+            
+        load = re.fullmatch(r"!load",message.content,re.IGNORECASE)
+        if load and message.author.id in self.admins and self.saveManager.checkJson():
+            try:
+                await message.channel.send("Loading from file...")
+                divisionBuffer = await self.saveManager.load(self)
+                self.divisions = divisionBuffer
+                await message.channel.send("Load successful!")
+            except:
+                await message.channel.send("DATA UNOBTAINABLE")
         
         lookUp = re.fullmatch(r"!Lookup\s+(.+)",message.content,re.IGNORECASE)
         if lookUp:
@@ -137,7 +159,7 @@ class MyClient(discord.Client):
         Start = re.fullmatch(r"!StartDraft",message.content,re.IGNORECASE)
         if Start and message.author.id in self.admins:
             for division_name,division in self.divisions.items():
-                division.activeTurn = division.players[0]
+                #division.activeTurn = division.players[0]
                 division.remainingTime = division.turnTimer
 
                 if not division.timerTask:

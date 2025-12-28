@@ -294,3 +294,20 @@ class Division:
         self.turnTracker,self.forward = self.forfeit(self.turnTracker,self.forward)
         self.next_turn_procedure()
         return
+    
+    def toJSON(self):
+        return dict(
+            draftChannel=self.draftChannel.id,
+            players=self.players,
+            activeTurn=self.activeTurn.discordId,
+            turnTracker=self.turnTracker,
+            forward=self.forward,
+            turnTimer=self.turnTimer,
+            draftedPokemon=self.draftedPokemon,
+            complexBans=self.complexBans,
+            roundCounter=self.roundCounter,
+            savedMessageId=self.savedMessageId,
+            savedChannelId=self.savedChannelId,
+            savedDraftRequest=self.savedDraftRequest,
+            confirmMessageId=self.confirmMessageId
+        )

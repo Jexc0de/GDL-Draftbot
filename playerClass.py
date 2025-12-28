@@ -86,3 +86,15 @@ class Player:
     #4)missed a turn and will draft again
     #5)captain unaffordable
     #6)drafted captain limit
+    def toJSON(self):
+        return dict(
+            discordId=self.discordId,
+            points=self.points,
+            draftedPokemon=self.draftedPokemon,
+            nicknames=self.nicknames,
+            missedTurns=self.missedTurns,
+            maxSingleTurnSpend=self.maxSingleTurnSpend,
+            captains=self.captains,
+            captainPoints=self.captainPoints,
+            waitingOnConfirmation=self.waitingOnConfirmation
+        )
