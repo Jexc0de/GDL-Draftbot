@@ -113,14 +113,19 @@ class MyClient(discord.Client):
             
         load = re.fullmatch(r"!load",message.content,re.IGNORECASE)
         if load and message.author.id in self.admins and self.saveManager.checkJson():
+            
+
             try:
                 await message.channel.send("Loading from file...")
                 divisionBuffer = await self.saveManager.load(self)
                 self.divisions = divisionBuffer
+                for division_name, division in self.divisions.items():
+                    division.timerTask = asyncio.create_task(division.run_timer())
                 await message.channel.send("Load successful!")
+                
             except:
                 await message.channel.send("DATA UNOBTAINABLE")
-        
+
         lookUp = re.fullmatch(r"!Lookup\s+(.+)",message.content,re.IGNORECASE)
         if lookUp:
             pokemonName = lookUp.group(1).strip()
