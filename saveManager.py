@@ -73,7 +73,7 @@ class SaveManager():
                 #decodes the players
                 for players in division["players"]:
                     p = await Player.create(bot, players["discordId"], points=players["points"])
-                    p.draftedPokemon = players["draftedPokemon"]
+                    p.draftedPokemon = {int(dex): pokemon for dex, pokemon in players["draftedPokemon"].items()}
                     p.nicknames = players["nicknames"]
                     p.missedTurns = players["missedTurns"]
                     p.maxSingleTurnSpend = players["maxSingleTurnSpend"]
