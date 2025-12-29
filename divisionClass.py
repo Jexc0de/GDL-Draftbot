@@ -275,7 +275,6 @@ class Division:
                 await message.channel.send("Due to this fact your draft request could not be complete. please draft another Pokémon.")
             #still have more mons to draft
             case 4:
-                self.draftedPokemon.append(PokemonName)
                 await self.draftChannel.send(AnnounceDraftedMessage)
                 await message.channel.send(f"**It's still your turn!** You have {self.activeTurn.missedTurns + 1} Pokémon left to draft.")
             case 5:
