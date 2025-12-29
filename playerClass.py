@@ -6,12 +6,12 @@ class Player:
     @classmethod
     async def create(cls,client,discordId,points=SeasonPoints):
         discordPlayerData = await client.fetch_user(discordId)
-        return cls(discordId,discordPlayerData)
+        return cls(discordId,discordPlayerData, points)
 
-    def __init__(self, discordId, discordPlayerData):
+    def __init__(self, discordId, discordPlayerData, playerPoints=SeasonPoints):
         self.discordId = discordId
         self.discordPlayerData = discordPlayerData
-        self.points = SeasonPoints
+        self.points = playerPoints
         #draftedPokemon by dex number and string
         self.draftedPokemon = {}
         #all nicknames of the player wherever the bot and player share a guild
