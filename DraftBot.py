@@ -117,8 +117,6 @@ class MyClient(discord.Client):
             
         load = re.fullmatch(r"!load",message.content,re.IGNORECASE)
         if load and message.author.id in self.admins and self.saveManager.checkJson():
-            
-
             try:
                 await message.channel.send("Loading from file...")
                 divisionBuffer = await self.saveManager.load(self)
@@ -130,8 +128,8 @@ class MyClient(discord.Client):
                     await division.notify_current_player()
                 await message.channel.send("Load successful!")
                 
-            except:
-                await message.channel.send("DATA UNOBTAINABLE")
+            except Exception as err:
+                await message.channel.send(f"DATA UNOBTAINABLE: {err}")
 
         lookUp = re.fullmatch(r"!Lookup\s+(.+)",message.content,re.IGNORECASE)
         if lookUp:
@@ -227,17 +225,16 @@ class MyClient(discord.Client):
                     messageToSend += f"{division_name}: No active turn\n"
             await message.channel.send(messageToSend)
         
-        showPokemon = re.fullmatch(r"!Team(\s|\Z)(.+|\Z)", message.content, re.IGNORECASE)
+        showPokemon = re.fullmatch(r"!Team(\s+|\Z)(.+|\Z)", message.content, re.IGNORECASE)
         if showPokemon:
             found = False
             messageToSend = ""
             nameSearch = ""
 
-            splitMessage = re.split(r"\s+", message.content)
-            if len(splitMessage) < 2:
+            nameSearch = showPokemon.group(2)
+
+            if re.match(r"\Z", nameSearch, re.IGNORECASE):
                 nameSearch = message.author.name
-            else:
-                nameSearch = splitMessage[1]
 
             for division_name,division in self.divisions.items():
                 for player in division.players:
