@@ -191,7 +191,7 @@ class Division:
             self.pokemonCheck = draft.group(1).strip().lower()
             pokemonData = bot.get_pokemon_info(self.pokemonCheck)
             if pokemonData == None:
-                await message.channel.send(self.pokemonCheck)
+                await message.channel.send(self.cantDraftMessage)
                 return
             if pokemonData['name'].lower() in self.draftedPokemon:
                 await message.channel.send(self.positiveCantDraftMessage)

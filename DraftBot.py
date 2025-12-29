@@ -136,6 +136,12 @@ class MyClient(discord.Client):
             pokemonName = lookUp.group(1).strip()
             result = self.get_pokemon_info(pokemonName)
 
+            if pokemonName == "twink":
+                flag = await message.channel.send("Thats not draftable...but it is bre-")
+                await asyncio.sleep(1)
+                await flag.delete()
+
+
             if result:
                 statuses = []
                 for division_name,division in self.divisions.items():
@@ -163,7 +169,10 @@ class MyClient(discord.Client):
                         f"Pokémon '{pokemonName}' not found. Did you mean: {suggestion_list}?"
                     )
                 else:
-                    await message.channel.send(f"Pokémon '{pokemonName}' not found.")
+                    try:
+                        await message.channel.send(f"Pokémon '{pokemonName}' not found.")
+                    except:
+                        await message.channel.send("rocket...we both know pokemon don't have names that long :/")
             return
         
         Start = re.fullmatch(r"!StartDraft",message.content,re.IGNORECASE)
@@ -239,8 +248,14 @@ class MyClient(discord.Client):
             for division_name,division in self.divisions.items():
                 for player in division.players:
                     #Created for readability as to not have one giant if statement. May revisit in the future for refactoring but for now it works
+                    names = [n.lower() for n in player.nicknames.values()]
+                    username = player.discordPlayerData.name.lower()
+                    displayname = player.discordPlayerData.display_name.lower()
+                    names.append(username)
+                    names.append(displayname)
 
-                    if nameSearch in player.nicknames.values() or player.discordPlayerData.name == nameSearch or player.discordPlayerData.display_name == nameSearch:
+                    
+                    if(nameSearch in names):
                         found = True
                         if player.draftedPokemon:
                             messageToSend = f"{player.discordPlayerData.name}'s drafted Pokémon in {division_name}:\n"

@@ -204,7 +204,7 @@ Dragalge,691,8
 Mega-Dragalge,691,16
 Dragonair,148,1
 Dragonite,149,15
-Mega-Dragonite,149,20
+Mega-Dragonite,149,22
 Drakloak,886,1
 Drampa,780,4
 Mega-Drampa,780,12
@@ -473,7 +473,7 @@ Lopunny,428,2
 Mega-Lopunny,428,17
 Lotad,270,1
 Lucario,448,8
-Mega-Lucario-Z,448,20
+Mega-Lucario-Z,448,23
 Ludicolo,272,4
 Lumineon,457,2
 Lurantis,754,4
@@ -806,7 +806,7 @@ Mega-Staraptor,398,13
 Staravia,397,1
 Starly,396,1
 Starmie,121,10
-Mega-Starmie,121,20
+Mega-Starmie,121,23
 Staryu,120,1
 Steelix,208,3
 Mega-Steelix,208,7
