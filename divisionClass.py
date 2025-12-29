@@ -142,7 +142,6 @@ class Division:
             if not (datetime.time(2,0)<= now < datetime.time(8,0)):
                 if self.remainingTime > 0:
                     self.remainingTime -= 1
-                    print(self.remainingTime)
                 
             if self.remainingTime <= 0:
                 await self.timeout_turn()
@@ -173,7 +172,7 @@ class Division:
         
         if str(react.emoji) == "🚫":
             self.clearRequestcache()
-            await channel.send("Choice cancelled. Please select new choice.")
+            await channel.send("Choice cancelled. Please select a new choice.")
             return
         if str(react.emoji) == "✅":
             await self.handle_draft(message,self.savedDraftRequest,bot)
@@ -189,6 +188,14 @@ class Division:
         #hijacked orginal draft request handling to have message confirmation added. Will revisit post season...
         draft = re.fullmatch(r"!draft\s+(.+)", message.content, re.IGNORECASE)
         if(draft):
+            self.pokemonCheck = draft.group(1).strip().lower()
+            pokemonData = bot.get_pokemon_info(self.pokemonCheck)
+            if pokemonData == None:
+                await message.channel.send(self.pokemonCheck)
+                return
+            if pokemonData['name'].lower() in self.draftedPokemon:
+                await message.channel.send(self.positiveCantDraftMessage)
+                return
             self.savedDraftRequest = draft.group(1).strip().lower()
             self.savedChannelId = message.channel.id
             self.savedMessageId = message.id
@@ -262,14 +269,15 @@ class Division:
             #dex rule
             case 2:
                 await message.channel.send(self.dexRuleMessage)
-            #more then one draft for turn
+            #greater then single turn spend
             case 3:
+                await message.channel.send(self.lowPointsWarning.format(max_pick=self.activeTurn.maxSingleTurnSpend))
+                await message.channel.send("Due to this fact your draft request could not be complete. please draft another Pokémon.")
+            #still have more mons to draft
+            case 4:
                 self.draftedPokemon.append(PokemonName)
                 await self.draftChannel.send(AnnounceDraftedMessage)
                 await message.channel.send(f"**It's still your turn!** You have {self.activeTurn.missedTurns + 1} Pokémon left to draft.")
-            case 4:
-                await message.channel.send(self.lowPointsWarning.format(max_pick=self.activeTurn.maxSingleTurnSpend))
-                await message.channel.send("Due to this fact your draft request could not be complete. please draft another Pokémon.")
             case 5:
                 await message.channel.send(self.notEnoughPointsMessage)
                 await message.channel.send(f"You have {self.activeTurn.captainPoints} points for your captain.")

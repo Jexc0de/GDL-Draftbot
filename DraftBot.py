@@ -17,7 +17,7 @@ class MyClient(discord.Client):
     #DelibirdPreList = [778339285941092362,439041234540167179,756503807340445737,416292418586148864,1249603080555724851,433365540082417664,
     # 466631621626560512,716763699984990258,750519011200204822,1450666082166636710]
 
-    DelibirdPreList = [603351664241672202,1247730986238873705,262053075693469696,416292418586148864,778339285941092362,435154768546234368]
+    DelibirdPreList = [603351664241672202,435154768546234368,1247730986238873705,262053075693469696,416292418586148864,778339285941092362]
 
     #harcoded admin IDs
     admins = [603351664241672202,1247730986238873705,435154768546234368]
@@ -124,7 +124,10 @@ class MyClient(discord.Client):
                 divisionBuffer = await self.saveManager.load(self)
                 self.divisions = divisionBuffer
                 for division_name, division in self.divisions.items():
+                    if division.timerTask:
+                        division.timerTask.cancel()
                     division.timerTask = asyncio.create_task(division.run_timer())
+                    await division.notify_current_player()
                 await message.channel.send("Load successful!")
                 
             except:
