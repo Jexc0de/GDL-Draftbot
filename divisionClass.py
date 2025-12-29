@@ -303,7 +303,7 @@ class Division:
             activeTurn=self.activeTurn.discordId,
             turnTracker=self.turnTracker,
             forward=self.forward,
-            turnTimer=self.turnTimer,
+            remainingTime=self.remainingTime,
             draftedPokemon=self.draftedPokemon,
             complexBans=self.complexBans,
             roundCounter=self.roundCounter,

@@ -17,6 +17,7 @@ class SaveManager():
     def checkJson(self):
         return os.path.getsize(self.fileName)
 
+    # Most of these are unused. Mainly put here if we wanted to autosave after certain commands are executed
     def saveDivision(self, division):
         with open(self.fileName, "r+", encoding="utf-8") as f:
             jdata = json.load(f)
@@ -85,7 +86,7 @@ class SaveManager():
                 
                 jdiv.turnTracker = division["turnTracker"]
                 jdiv.forward = division["forward"]
-                jdiv.turnTimer = division["turnTimer"]
+                jdiv.remainingTime = division["remainingTime"]
                 jdiv.draftedPokemon = division["draftedPokemon"]
                 jdiv.complexBans = division["complexBans"]
                 jdiv.roundCounter = division["roundCounter"]
