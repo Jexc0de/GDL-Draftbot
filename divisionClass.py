@@ -133,7 +133,7 @@ class Division:
     
     async def next_turn_procedure(self):
         self.activeTurn = self.players[self.turnTracker]
-        self.remaining_time = self.turnTimer
+        self.remainingTime = self.turnTimer
         await self.notify_current_player()
     
     async def run_timer(self):
@@ -142,9 +142,10 @@ class Division:
             if not (datetime.time(2,0)<= now < datetime.time(8,0)):
                 if self.remainingTime > 0:
                     self.remainingTime -= 1
+                    print(self.remainingTime)
                 
             if self.remainingTime <= 0:
-                await self.time()
+                await self.timeout_turn()
             await asyncio.sleep(1)
     
     async def timeout_turn(self):
@@ -153,7 +154,7 @@ class Division:
         timed_out.missedTurns += 1
         self.turnTracker,self.forward = self.get_next_turn(self.turnTracker,self.forward)
         self.activeTurn = self.players[self.turnTracker]
-        self.remaining_time = self.turnTimer
+        self.remainingTime = self.turnTimer
         await self.notify_current_player()
 
 

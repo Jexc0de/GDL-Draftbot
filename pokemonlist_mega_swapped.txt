@@ -957,3 +957,4 @@ Zubat,41,1
 Zweilous,634,1
 Zygarde,718,16
 Zygarde-10%,718,9
+Mega-greninja,658,23

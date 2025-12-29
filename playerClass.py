@@ -51,14 +51,19 @@ class Player:
             self.draftedPokemon[dexNumber] = pokemonName
             self.captains[dexNumber] = pokemonName
             self.captainPoints -= pokemonCost
+            self.points -= pokemonCost
 
 
     def attempt_captain_draft(self,dexNum,pokemonName,pokemonCost):
         self.update_single_turn_spend()
-        if pokemonCost > self.captainPoints:
-            return 5
+        if pokemonCost > self.points:
+            return 1
         if dexNum in self.draftedPokemon:
             return 2
+        if self.greater_then_max_spend(pokemonCost):
+            return 3
+        if pokemonCost > self.captainPoints:
+            return 5
         if len(self.captains) == self.captainLimit:
             return 6
         self.draft(dexNum,pokemonName,pokemonCost,captain=True)

@@ -11,9 +11,13 @@ from saveManager import SaveManager
 class MyClient(discord.Client):
 
     #hardcoded division prelist, filled with discord IDs of players in order
-    IronBundlePrelist = [603351664241672202]
+    #IronBundlePrelist = [262053075693469696,486970959652323369,612444843616239629,332739281212669952,686025575944421396,147367975291322369,
+    # 702544770299330591,140072517581799424,732688360178712596,603351664241672202]
     
-    DelibirdPreList = [603351664241672202]
+    #DelibirdPreList = [778339285941092362,439041234540167179,756503807340445737,416292418586148864,1249603080555724851,433365540082417664,
+    # 466631621626560512,716763699984990258,750519011200204822,1450666082166636710]
+
+    DelibirdPreList = [603351664241672202,1247730986238873705,262053075693469696,416292418586148864,778339285941092362,435154768546234368]
 
     #harcoded admin IDs
     admins = [603351664241672202,1247730986238873705,435154768546234368]
@@ -57,9 +61,9 @@ class MyClient(discord.Client):
                     break
 
         self.divisions ={
-                "iron-bundle":Division("iron-bundle",self),
-                "delibird": Division("delibird",self)
-                #"porygon":Division("porygon",self)
+                #"iron-bundle":Division("iron-bundle",self),
+                #"delibird": Division("delibird",self)
+                "porygon":Division("porygon",self)
             }
 
         for divison_name, divison in self.divisions.items():
@@ -185,7 +189,7 @@ class MyClient(discord.Client):
             await message.channel.send("It seems I was unable to find that division.")
             return
         
-        addRule = re.fullmatch(r"!addcban\s+(\w+)\s+(.+)", message.content, re.IGNORECASE)
+        addRule = re.fullmatch(r"!addcban\s+([\w-]+)\s+(.+)", message.content, re.IGNORECASE)
         if addRule and message.author.id in self.admins:
             pokemon_request = addRule.group(1).lower()
             rule_request = addRule.group(2).lower().strip()
