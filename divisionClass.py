@@ -126,7 +126,7 @@ class Division:
         if forward != oldForward:
             self.roundCounter += 1
 
-        if self.roundCounter >=self.draftMax:
+        if self.roundCounter > self.draftMax:
            asyncio.create_task(self.draft_over())
 
         return currentIndex, forward
@@ -240,6 +240,7 @@ class Division:
             case 0:
                 self.draftedPokemon.append(PokemonName)
                 await self.draftChannel.send(AnnounceDraftedMessage)
+                await self.drafting_easter_eggs(PokemonName,bot)
                 followUpMessage = self.pointsRemainingMessage.format(points = self.activeTurn.points)
                 await message.channel.send(followUpMessage)
                 await message.channel.send(f"You also have {self.activeTurn.captainPoints} captain points remaining.")
@@ -319,3 +320,10 @@ class Division:
             savedDraftRequest=self.savedDraftRequest,
             confirmMessageId=self.confirmMessageId
         )
+    async def drafting_easter_eggs(self,pokemonName,bot):
+        if(pokemonName.lower() == "garganacl"):
+            await self.draftChannel.send("I can't believe someone drafted rock hitler....")
+        if(pokemonName.lower() == "alomomola"):
+            await self.draftChannel.send("also known as fishler...")
+        if(pokemonName.lower() == "clodsire"):
+            await self.draftChannel.send("I am now rooting for this team!")

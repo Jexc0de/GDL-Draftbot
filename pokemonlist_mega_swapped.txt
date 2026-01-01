@@ -344,7 +344,7 @@ Gouging Fire,1020,16
 Gourgeist,711,5
 Grafaiai,945,6
 Granbull,210,4
-Grapploct,853,1
+Grapploct,853,2
 Graveler,75,1
 Graveler-Alola,75,1
 Great Tusk,984,18
@@ -661,7 +661,7 @@ Rabsca,954,2
 Raging Bolt,1021,16
 Raichu,26,4
 Raichu-Alola,26,5
-Mega-Raichu-X,26,6
+Mega-Raichu-X,26,5
 Mega-Raichu-Y,26,15
 Raikou,243,13
 Ralts,280,1

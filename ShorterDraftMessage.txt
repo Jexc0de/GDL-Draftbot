@@ -13,6 +13,6 @@ Draft a Pokémon using the following commands:
 
 !help – full list of commands
 
-Remember: minimum 9 and maximum 12 Pokémon; Tera-Captains cannot be drafted. For other rules, check your division’s pinned spreadsheet.
+Remember: minimum 9 and maximum 12 Pokémon; You can draft up to 2 Megas, For other rules, check your division’s pinned spreadsheet.
 
 Questions about the bot? DM Justin(jex). Questions about the league? DM Zack(league runner).
